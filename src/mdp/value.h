@@ -1,10 +1,8 @@
-#ifndef DP_POLICY_H
-#define DP_POLICY_H
 #include <unordered_map>
 #include <memory>
 #include "iproblem.h"
 #include "policy.h"
-#include "state.h"
+
 namespace mdp
 {
     /**
@@ -32,5 +30,3 @@ namespace mdp
     };
 
 } // namespace mdp
-
-#endif

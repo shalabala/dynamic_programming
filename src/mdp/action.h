@@ -1,6 +1,7 @@
 #ifndef DP_ACTION_H
 #define DP_ACTION_H
 #include <string>
+
 namespace mdp
 {
     /**
@@ -14,10 +15,12 @@ namespace mdp
              * Creates the action object with the given id and id.
             */
             Action(const std::string& name, int id);
+
             /**
              * Gets the id.
             */
             int getId() const;
+
             /**
              * Gets the name.
             */
@@ -26,6 +29,6 @@ namespace mdp
         private:
             const std::string _name;
             const int _id;
-    }
-};
+    };
+}
 #endif

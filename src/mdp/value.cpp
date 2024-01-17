@@ -1,13 +1,8 @@
-#include <memory>
-#include <limits>
-#include <algorithm>
-#include <vector>
 #include "value.h"
-#include "state.h"
-#include "action.h"
-#include "../constants.h"
+#include "constants.h"
 
 namespace mdp{
+    
     double ValueFunction::performIteration()
     {
         double maxDifference = 0;
