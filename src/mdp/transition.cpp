@@ -4,14 +4,15 @@
 
 namespace mdp
 {
-    Transition::Transition(double probability, 
-                            double reward,
-                            shared_ptr<Action> causingAction, 
-                            shared_ptr<State> state) :
-                _probability(probability),
-                _reward(reward),
-                _causingAction(causingAction),
-                _state(state) {}
+    Transition::Transition(shared_ptr<Action> causingAction,
+        shared_ptr<State> state,
+        double probability,
+        double reward
+    ) :
+        _probability(probability),
+        _reward(reward),
+        _causingAction(causingAction),
+        _state(state) {}
 
     double Transition::getProbability() const
     {
