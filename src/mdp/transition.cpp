@@ -4,8 +4,8 @@
 
 namespace mdp
 {
-    Transition::Transition(shared_ptr<Action> causingAction,
-        shared_ptr<State> state,
+    Transition::Transition(int causingAction,
+        int state,
         double probability,
         double reward
     ) :
@@ -22,13 +22,14 @@ namespace mdp
     double Transition::getReward() const
     {
         return _reward;
-
     }
-    shared_ptr<Action> Transition::getCausingAction() const
+
+    int Transition::getCausingActionId() const
     {
         return _causingAction;
     }
-    shared_ptr<State> Transition::getState() const
+
+    int Transition::getStateId() const
     {
         return _state;
     }
