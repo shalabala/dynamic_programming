@@ -1,5 +1,5 @@
-#ifndef DP_IPROBLEM_H
-#define DP_IPROBLEM_H
+#ifndef DP_PROBLEM_H
+#define DP_PROBLEM_H
 #include <vector>
 #include <memory>
 #include "state.h"
@@ -17,9 +17,8 @@ namespace mdp
         /**
          * Creates a Problem instance.
         */
-        Problem(int numOfRewards,
-            int numOfActions,
-            int numOfStates,
+        Problem(size_t numOfActions,
+            size_t numOfStates,
             double discountRate);
 
         /**
@@ -45,11 +44,6 @@ namespace mdp
         shared_ptr<Action> getAction(int actionId);
 
         /**
-         * Gets a list of all the possible rewards of this problem.
-        */
-        const std::vector<double>& getRewards() const;
-
-        /**
          * Gets all the registered actions of this problem.
         */
         const std::vector<shared_ptr<Action>>& getActions() const;
@@ -71,10 +65,8 @@ namespace mdp
         */
         void validate();
     private:
-        int _numOfRewards;
-        int _numOfActions;
-        int _numOfStates;
-        std::vector<double> _rewards;
+        size_t _numOfActions;
+        size_t _numOfStates;
         std::vector<shared_ptr<Action>> _actions;
         std::vector<shared_ptr<State>> _states;
         double _discountRate;
