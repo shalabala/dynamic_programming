@@ -2,9 +2,16 @@
 
 namespace mdp
 {
-    vector<ProbableAction> Policy::getActions(const State &state) const
+    Policy::Policy(const vector<vector<ProbableAction>>& mappings) : _mappings(mappings)
     {
-        return vector<ProbableAction>();
     }
 
-} // namespace mdp
+    const vector<ProbableAction>& Policy::getActions(int state) const
+    {
+        return _mappings[state];
+    }
+    const vector<vector<ProbableAction>>& Policy::getAllActions() const
+    {
+        return _mappings;
+    }
+}

@@ -5,7 +5,7 @@
 #include "constants.h"
 
 using namespace std;
-
+const double Threshold = 0.0000000000001;
 namespace mdp {
 
     ValueFunction ValueFunction::createRandomizedValueFunction(std::shared_ptr<Problem> problem)
@@ -14,6 +14,46 @@ namespace mdp {
         vector<double> mappings(states.size());
         ValueFunction vf(mappings, problem);
         return vf;
+    }
+
+    Policy ValueFunction::getPolicy()
+    {
+        vector<vector<ProbableAction>> actionMappings(_mappings.size());
+        for (size_t i = 0; i < _mappings.size(); i++)
+        {
+            auto state = _decisionProblem->getState(i);
+
+            auto& actionsForThisState = actionMappings[i];
+            double maxValueForAction = constants::DoubleMinValue;
+
+            auto& actions = state->getPossibleActions();
+            for (auto&& action : actions)
+            {
+                auto& transitions = state->getPossibleTransitions(action);
+                double actionVal = 0;
+                for (auto&& transition : transitions)
+                {
+                    actionVal += transition->getProbability() * (transition->getReward() + _mappings[transition->getStateId()]);
+                }
+                if (abs(actionVal - maxValueForAction) < Threshold)
+                {
+                    actionsForThisState.push_back(ProbableAction(1, action));
+                }
+                else if (actionVal > maxValueForAction)
+                {
+                    actionsForThisState.clear();
+                    actionsForThisState.push_back(ProbableAction(1, action));
+                    maxValueForAction = actionVal;
+                }
+            }
+
+            //normalize probabilities
+            for (auto&& probableAction : actionsForThisState)
+            {
+                probableAction.probability = 1.0 / actionsForThisState.size();
+            }
+        }
+        return Policy(actionMappings);
     }
 
     ValueFunction::ValueFunction(const vector<double>& mappings, const shared_ptr<Problem>& decisionProblem) :

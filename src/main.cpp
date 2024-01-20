@@ -68,10 +68,26 @@ int main()
 {
     auto p = getCoinFlipProblem(0.4);
     auto valueFunction = mdp::ValueFunction::createRandomizedValueFunction(p);
-    double e = 0.001;
-    double difference = 2 * e;
+    double e = 0;
+    double difference = e + 1;
+    int numOfIterations = 0;
     while (difference > e) {
         difference = valueFunction.performIteration();
+        numOfIterations++;
     }
 
+    cout << "Number of iterations : " << to_string(numOfIterations) << endl;
+    auto policy = valueFunction.getPolicy();
+    auto& actions = policy.getAllActions();
+    for (size_t i = 0; i < actions.size(); i++)
+    {
+        cout << "State: " << to_string(i) << ", Actions: ";
+        for (auto&& i : actions[i])
+        {
+            cout << "( bet : " << to_string(i.action + 1) << "; probability: " << to_string(i.probability) << "), ";
+        }
+        cout << endl;
+    }
+
+    cout << "success" << endl;
 }

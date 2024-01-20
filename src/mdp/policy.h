@@ -15,9 +15,12 @@ namespace mdp
     struct ProbableAction
     {
     public:
-    private:
-        double _probability;
-        std::shared_ptr<Action> _action;
+        ProbableAction(double probability, int action) :
+            probability(probability),
+            action(action) {}
+
+        double probability;
+        int action;
     };
 
     /**
@@ -26,10 +29,12 @@ namespace mdp
     class Policy
     {
     public:
-        vector<ProbableAction> getActions(const State &state) const;
+        Policy(const vector<vector<ProbableAction>>& mappings);
+        const vector<ProbableAction>& getActions(int state) const;
+        const vector<vector<ProbableAction>>& getAllActions() const;
 
     private:
-        unordered_map<shared_ptr<const State>, vector<ProbableAction>> mappings;
+        vector<vector<ProbableAction>> _mappings;
     };
 } // namespace mdp
 
