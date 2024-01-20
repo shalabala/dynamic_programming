@@ -1,17 +1,34 @@
 #include "value.h"
+
+#include <unordered_map>
+#include <random>
 #include "constants.h"
 
+using namespace std;
+
 namespace mdp {
+
+    ValueFunction ValueFunction::createRandomizedValueFunction(std::shared_ptr<Problem> problem)
+    {
+        auto& states = problem->getStates();
+        vector<double> mappings(states.size());
+        ValueFunction vf(mappings, problem);
+        return vf;
+    }
+
+    ValueFunction::ValueFunction(const vector<double>& mappings, const shared_ptr<Problem>& decisionProblem) :
+        _mappings(mappings),
+        _decisionProblem(decisionProblem) {}
 
     double ValueFunction::performIteration()
     {
         double maxDifference = 0;
 
-        for (auto&& entry : _mappings)
+        for (size_t i = 0; i < _mappings.size(); i++)
         {
-            auto stateId = entry.first;
+            auto stateId = i;
             auto state = _decisionProblem->getState(stateId);
-            auto oldValue = entry.second;
+            auto oldValue = _mappings[i];
             auto actions = state->getPossibleActions();
             //terminal state has a static value of 0
             double maxActionValue = actions.size() == 0 ? 0 : constants::DoubleMinValue;
@@ -31,7 +48,7 @@ namespace mdp {
                 }
                 maxActionValue = std::max(actionValue, maxActionValue);
             }
-            entry.second = maxActionValue;
+            _mappings[i] = maxActionValue;
             double difference = std::abs(oldValue - maxActionValue);
             maxDifference = std::max(difference, maxDifference);
         }

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include <memory>
 #include <unordered_map>
 #include <stdexcept>
@@ -17,7 +18,7 @@ namespace mdp {
 
     public:
         State(const string& name, int id, const vector<shared_ptr<Transition>>& transitions);
-        const vector<int>& getPossibleActions() const;
+        const unordered_set<int>& getPossibleActions() const;
         const vector<shared_ptr<Transition>>& getPossibleTransitions(int actionId) const;
         int getId() const;
         const string& getName() const;
@@ -38,7 +39,7 @@ namespace mdp {
             /**
              * Gets the possible actions, if a cache is already present. Otherwise throws an logic_error exception.
             */
-            const vector<int>& getPossibleActions() const;
+            const unordered_set<int>& getPossibleActions() const;
 
             /**
              * Saves the value in the cache as the possible actions;
@@ -61,7 +62,7 @@ namespace mdp {
             void savePossibleTransition(const vector<shared_ptr<Transition>>& transitions);
 
         private:
-            unique_ptr<vector<int>> _possibleActions;
+            unique_ptr<unordered_set<int>> _possibleActions;
             unordered_map<int, vector<shared_ptr<Transition>>> _possibleTransitions;
         };
         const string _name;

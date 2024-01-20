@@ -13,7 +13,7 @@ namespace mdp
         _transitions(transitions)
     {}
 
-    const vector<int>& State::getPossibleActions() const
+    const unordered_set<int>& State::getPossibleActions() const
     {
         if (!_cachedState.hasCacheForPossibleActions())
         {
@@ -48,7 +48,7 @@ namespace mdp
         return _possibleActions != nullptr;
     }
 
-    const vector<int>& State::CachedState::getPossibleActions() const
+    const unordered_set<int>& State::CachedState::getPossibleActions() const
     {
         if (_possibleActions)
         {
@@ -62,10 +62,10 @@ namespace mdp
 
     void State::CachedState::savePossibleActions(const vector<shared_ptr<Transition>>& transitions)
     {
-        _possibleActions = make_unique<vector<int>>();
+        _possibleActions = make_unique<unordered_set<int>>();
         for (auto&& t : transitions)
         {
-            _possibleActions->push_back(t->getCausingActionId());
+            _possibleActions->insert(t->getCausingActionId());
         }
     }
 
@@ -84,7 +84,7 @@ namespace mdp
     {
         for (auto&& transition : transitions)
         {
-            auto id = _possibleTransitions.contains(transition->getCausingActionId());
+            auto id = transition->getCausingActionId();
             if (_possibleTransitions.contains(id))
             {
                 _possibleTransitions[id].push_back(transition);

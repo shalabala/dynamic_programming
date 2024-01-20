@@ -3,6 +3,8 @@
 #include "problem.h"
 #include "policy.h"
 
+using namespace std;
+
 namespace mdp
 {
     /**
@@ -23,10 +25,9 @@ namespace mdp
         Policy getPolicy();
 
     private:
-        std::unordered_map<int, double> _mappings;
-        std::shared_ptr<Problem> _decisionProblem;
-
-
+        ValueFunction(const vector<double>& mappings, const shared_ptr<Problem>& _decisionProblem);
+        vector<double> _mappings;
+        shared_ptr<Problem> _decisionProblem;
     };
 
 } // namespace mdp

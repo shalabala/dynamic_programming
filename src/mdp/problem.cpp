@@ -38,7 +38,7 @@ namespace mdp
     shared_ptr<State> Problem::getState(int stateId)
     {
         auto& currentValue = _states[stateId];
-        if (currentValue != nullptr) {
+        if (currentValue == nullptr) {
             throw logic_error("State " + to_string(stateId) + " has not been registered.");
         }
         return currentValue;
@@ -47,7 +47,7 @@ namespace mdp
     shared_ptr<Action> Problem::getAction(int actionId)
     {
         auto& currentValue = _actions[actionId];
-        if (currentValue != nullptr) {
+        if (currentValue == nullptr) {
             throw logic_error("State " + to_string(actionId) + " has not been registered.");
         }
         return currentValue;
