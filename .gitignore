@@ -4,9 +4,9 @@
 #vscode
 .vscode/
 
-/build/*
-!/build/CMakeLists.txt
-!/build/dictionary_*.csv
+**/build/*
+**/.cmake
+!**/build/CMakeLists.txt
 
 # Compiled Object files
 *.slo
@@ -56,9 +56,6 @@ _deps
 ### CMake Patch ###
 # External projects
 *-prefix/
-
-#executable
-build/cwtrainer*
 
 cwtrainer.config.json
 todo.txt
