@@ -17,14 +17,35 @@ namespace mdp {
     class State {
 
     public:
+        /**
+         * Creates the state instance.
+         * @param name The name of the state.
+         * @param id The id of the state.
+        */
         State(const string& name, int id, const vector<shared_ptr<Transition>>& transitions);
+
+        /**
+         * Gets all possible actions for this state.
+        */
         const unordered_set<int>& getPossibleActions() const;
+
+        /**
+         * Gets all possible transitions for the given action.
+        */
         const vector<shared_ptr<Transition>>& getPossibleTransitions(int actionId) const;
+
+        /**
+         * Gets the state id.
+        */
         int getId() const;
+
+        /**
+         * Gets the state name.
+        */
         const string& getName() const;
 
         /**
-         * Validates the state, wether its probabilities all sum to one.
+         * Validates the state, wether it's probabilities all sum to one.
         */
         void validate() const;
     private:

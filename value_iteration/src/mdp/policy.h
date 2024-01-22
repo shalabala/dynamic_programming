@@ -15,11 +15,21 @@ namespace mdp
     struct ProbableAction
     {
     public:
+        /**
+         * Creates a ProbableAction instance.
+        */
         ProbableAction(double probability, int action) :
             probability(probability),
             action(action) {}
 
+        /**
+         * Probability that the action is taken.
+        */
         double probability;
+
+        /**
+         * The action to be taken.
+        */
         int action;
     };
 
@@ -29,8 +39,19 @@ namespace mdp
     class Policy
     {
     public:
+        /**
+         * Creates the Policy instance.
+        */
         Policy(const vector<vector<ProbableAction>>& mappings);
+
+        /**
+         * Gets the actions associated to the given state.
+        */
         const vector<ProbableAction>& getActions(int state) const;
+
+        /**
+         * Gets all the actions. The state id is the index for the vector.
+        */
         const vector<vector<ProbableAction>>& getAllActions() const;
 
     private:

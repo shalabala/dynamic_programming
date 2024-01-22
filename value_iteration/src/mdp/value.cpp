@@ -5,8 +5,8 @@
 #include "constants.h"
 
 using namespace std;
-const double Threshold = 0.0000000000001;
 namespace mdp {
+    const double Threshold = 0.0000000000001;
 
     ValueFunction ValueFunction::createRandomizedValueFunction(std::shared_ptr<Problem> problem)
     {
