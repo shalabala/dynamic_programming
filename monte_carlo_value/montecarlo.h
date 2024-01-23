@@ -10,6 +10,8 @@ typedef struct{
     double average;
 } ValueEntry;
 
+void initRandomPolicy();
+
 int randomPolicy(MDP *mdp);
 
 ValueEntry *estimateValue(MDP *mdp, int numberOfIterations, Policy policy);

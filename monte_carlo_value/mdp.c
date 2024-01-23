@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "settings.h"
+
 void setStateActions(State *state, int numOfActions, ...)
 {
     va_list args;
@@ -37,7 +39,7 @@ void addAction(MDP *mdp, int id, char *name)
 MDP *getMDP()
 {
     MDP *mdp = malloc(sizeof(MDP));
-    mdp->numOfStates = 5;
+    mdp->numOfStates = 6;
     mdp->states = malloc(sizeof(State) * mdp->numOfStates);
     char stateNamePattern[] = "State # ";
     int stateNameLength = strlen(stateNamePattern) + 1;
@@ -50,7 +52,7 @@ MDP *getMDP()
         strcpy(state->name, stateNamePattern);
         mdp->states[i] = state;
     }
-    mdp->numOfActions = 6;
+    mdp->numOfActions = 7;
     mdp->actions = malloc(sizeof(Action) * mdp->numOfActions);
     addAction(mdp, 0, "right");
     addAction(mdp, 1, "left");
@@ -58,20 +60,23 @@ MDP *getMDP()
     addAction(mdp, 3, "down");
     addAction(mdp, 4, "right up");
     addAction(mdp, 5, "left down");
+    addAction(mdp, 6, "right down");
 
     setStateActions(mdp->states[0], 2, 0, 3);
     setStateActions(mdp->states[1], 2, 2, 4);
     setStateActions(mdp->states[2], 3, 0, 1, 5);
-    setStateActions(mdp->states[3], 2, 0, 1);
+    setStateActions(mdp->states[3], 3, 0, 1, 6);
     setStateActions(mdp->states[4], 0);
+    setStateActions(mdp->states[5], 0);
 
-    mdp->discounting = 1;
+    mdp->discounting = DISCOUNTING;
 
     reset(mdp);
     return mdp;
 }
 
-void reset(MDP * mdp){
+void reset(MDP *mdp)
+{
     mdp->currentState = mdp->states[0];
     mdp->lastReward = 0;
     mdp->actionsTaken = 0;
@@ -97,15 +102,10 @@ void freeMDP(MDP *mdp)
 
 void performAction(MDP *mdp, int action)
 {
-    //after 10 actions we quit with no reward.
-    if(mdp->actionsTaken >= 10){
-        mdp->currentState = mdp->states[4];
-        return;
-    }
     ++mdp->actionsTaken;
     switch (mdp->currentState->id)
     {
-    case 0: // state 1
+    case 0: // state 0
         switch (action)
         {
         case 0: // right goes to state 2
@@ -154,11 +154,15 @@ void performAction(MDP *mdp, int action)
         switch (action)
         {
         case 0: // right goes to state 2
-            mdp->currentState = mdp->states[1];
-            return;
-        case 1: // left goes to state 4
             mdp->currentState = mdp->states[4];
-            mdp->lastReward = 1;
+            mdp->lastReward = POS_REWARD;
+            return;
+        case 6: // right goes to state 2
+            mdp->currentState = mdp->states[5];
+            mdp->lastReward = NEG_REWARD;
+            return;
+        case 1: // left goes to state 2
+            mdp->currentState = mdp->states[2];
             return;
         default:
             printf("Illegal action %d from state %d", action, mdp->currentState->id);
@@ -166,13 +170,13 @@ void performAction(MDP *mdp, int action)
             return;
         }
     case 4:
-        switch (action)
-        {
-        default:
-            printf("Illegal action %d from state %d", action, mdp->currentState->id);
-            exit(-1);
-            return;
-        }
+        printf("Illegal action %d from state %d", action, mdp->currentState->id);
+        exit(-1);
+        return;
+    case 5:
+        printf("Illegal action %d from state %d", action, mdp->currentState->id);
+        exit(-1);
+        return;
 
     default:
         printf("Illegal action %d from state %d", action, mdp->currentState->id);

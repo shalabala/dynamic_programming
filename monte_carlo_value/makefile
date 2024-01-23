@@ -12,7 +12,7 @@ BUILD_DIR = build
 OBJS = $(addprefix $(BUILD_DIR)/,$(SRCS:.c=.o))
 
 # Header files
-HEADERS = mdp.h montecarlo.h
+HEADERS = mdp.h montecarlo.h settings.h
 
 # Target executable
 TARGET = $(BUILD_DIR)/my_program

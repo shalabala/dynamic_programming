@@ -6,7 +6,7 @@
 
 typedef struct
 {
-    int originalState;
+    int nextState;
     int actionTaken;
     double rewardReceived;
     int shouldSample;
@@ -55,11 +55,16 @@ void freeList(ActionResultList *list)
     free(list);
 }
 
-int randomPolicy(MDP *mdp)
+void initRandomPolicy()
 {
     srand(time(NULL));
+}
+
+int randomPolicy(MDP *mdp)
+{
     State *s = mdp->currentState;
-    int actionPosition = rand() % s->numOfPossibleActions;
+    int r = rand();
+    int actionPosition = r % s->numOfPossibleActions;
     int actionId = s->possibleActions[actionPosition];
     return actionId;
     return 0;
@@ -74,6 +79,7 @@ ValueEntry *estimateValue(MDP *mdp, int numberOfIterations, Policy policy)
     int flags[mdp->numOfStates];
     ActionResult *result;
     ValueEntry *entry;
+    double g;
 
     for (int l = 0; l < numOfStates; ++l)
     {
@@ -81,33 +87,37 @@ ValueEntry *estimateValue(MDP *mdp, int numberOfIterations, Policy policy)
         entries[l].numberOfUpdates = 0;
     }
 
-    double g;
     lastActionResult.shouldSample = 0;
     for (int i = 0; i < numberOfIterations; ++i)
     {
         clear(list);
         reset(mdp);
+        lastActionResult.nextState = mdp->currentState->id;
+        lastActionResult.actionTaken = -1;
+        lastActionResult.rewardReceived = mdp->lastReward;
+        append(list, &lastActionResult);
         while (mdp->currentState->numOfPossibleActions != 0)
         {
-            lastActionResult.originalState = mdp->currentState->id;
             lastActionResult.actionTaken = policy(mdp);
             performAction(mdp, lastActionResult.actionTaken);
+            lastActionResult.nextState = mdp->currentState->id;
             lastActionResult.rewardReceived = mdp->lastReward;
             append(list, &lastActionResult);
         }
+        
         g = 0;
         // marking the updates that need to be taken into account
-        for (int j = 0; j < list->size; ++j)
+        for (int j = 0; j < mdp->numOfStates; ++j)
         {
-            for (int j = 0; j < mdp->numOfStates; ++j)
-            {
-                flags[j] = 1;
-            }
+            flags[j] = 1;
+        }
+        for (size_t j = 0; j < list->size; ++j)
+        {
             result = list->elements + j;
 
-            if (flags[result->originalState])
+            if (flags[result->nextState])
             {
-                flags[result->originalState] = 0;
+                flags[result->nextState] = 0;
                 result->shouldSample = 1;
             }
         }
@@ -115,7 +125,7 @@ ValueEntry *estimateValue(MDP *mdp, int numberOfIterations, Policy policy)
         for (int k = list->size - 1; k >= 0; --k)
         {
             result = list->elements + k;
-            entry = entries + result->originalState;
+            entry = entries + result->nextState;
             g = g * mdp->discounting + result->rewardReceived;
             // calculating running average
             if (result->shouldSample)
@@ -125,6 +135,8 @@ ValueEntry *estimateValue(MDP *mdp, int numberOfIterations, Policy policy)
             }
         }
     }
+
+    free(list->elements);
     free(list);
     return entries;
 }
